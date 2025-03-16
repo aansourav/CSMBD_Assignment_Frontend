@@ -51,13 +51,13 @@ export default function Sidebar() {
             title: "Account",
             items: [
                 {
-                    title: "Login",
-                    href: "/login",
+                    title: "Sign In",
+                    href: "/signin",
                     icon: <LogIn className="h-4 w-4 mr-2" />,
                 },
                 {
-                    title: "Register",
-                    href: "/register",
+                    title: "Sign Up",
+                    href: "/signup",
                     icon: <UserPlus className="h-4 w-4 mr-2" />,
                 },
             ],

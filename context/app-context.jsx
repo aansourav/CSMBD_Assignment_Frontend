@@ -2,6 +2,7 @@
 
 import { useToast } from "@/components/ui/use-toast";
 import { API_URL } from "@/config/url";
+import { post } from "@/services/api";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AppContext = createContext(undefined);
@@ -142,27 +143,48 @@ export function AppProvider({ children }) {
 
     // Logout function
     const logout = async () => {
+        setLoading(true);
+
         try {
             const accessToken = localStorage.getItem("accessToken");
+
             if (accessToken) {
-                // Call logout API
-                await fetch(`${API_URL}/auth/signout`, {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        "Content-Type": "application/json",
-                    },
-                }).catch((error) =>
-                    console.error("Error during signout:", error)
-                );
+                try {
+                    // Call the signout API using our API service
+                    await post(
+                        "/auth/signout",
+                        {}, // Empty body
+                        {
+                            headers: {
+                                Authorization: `Bearer ${accessToken}`,
+                            },
+                        }
+                    );
+
+                    toast({
+                        title: "Logged Out",
+                        description: "You have been successfully logged out.",
+                    });
+                } catch (error) {
+                    console.error("Error during signout:", error);
+
+                    toast({
+                        title: "Logout Error",
+                        description:
+                            "There was an issue logging you out, but your session has been cleared.",
+                        variant: "destructive",
+                    });
+                }
             }
         } finally {
             // Clear user data regardless of API call success
             clearAuthData();
-            toast({
-                title: "Logged Out",
-                description: "You have been successfully logged out.",
-            });
+            setLoading(false);
+
+            // Force reload to the home page to clear any state
+            if (typeof window !== "undefined") {
+                window.location.href = "/";
+            }
         }
     };
 

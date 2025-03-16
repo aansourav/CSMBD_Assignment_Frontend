@@ -16,7 +16,7 @@ import {
 import { useApp } from "@/context/app-context";
 import { dummyUsers } from "@/data/dummy-data";
 import { motion } from "framer-motion";
-import { Search, User, Users, Youtube } from "lucide-react";
+import { Search, User, Youtube } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -90,7 +90,6 @@ export default function UsersPage() {
                         <h1 className="text-3xl font-bold tracking-tight">
                             Users
                         </h1>
-                        <Users className="h-20 w-20 bg-white rounded-full py-2 px-2 text-black my-10" />
                         <p className="text-muted-foreground">
                             Browse and discover users on the platform.
                         </p>
