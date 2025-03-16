@@ -1,6 +1,7 @@
 "use client";
 
 import MainLayout from "@/components/layout/main-layout";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,52 +14,86 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import { BASE_URL } from "@/config/url";
 import { useApp } from "@/context/app-context";
-import { dummyUsers } from "@/data/dummy-data";
+import { get } from "@/services/api";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Search, User, Youtube } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function UsersPage() {
-    const { setLoading, loading } = useApp();
-    const [users, setUsers] = useState([]);
+    const { refreshAccessToken } = useApp();
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+    const [itemsPerPage] = useState(8);
 
+    // Debounce search term with proper useEffect (1000ms debounce)
     useEffect(() => {
-        // Simulate loading data
-        setLoading(true);
+        const timer = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 1000);
 
-        setTimeout(() => {
-            // Filter users based on search term
-            const filteredUsers = dummyUsers.filter(
-                (user) =>
-                    user.name
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase()) ||
-                    user.email.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
 
-            // Pagination
-            const itemsPerPage = 8;
-            const totalItems = filteredUsers.length;
-            const calculatedTotalPages = Math.ceil(totalItems / itemsPerPage);
+    // Fetch users with TanStack Query - without search parameter
+    const {
+        data: apiResponse,
+        isLoading,
+        isError,
+        error,
+    } = useQuery({
+        queryKey: ["users"],
+        queryFn: () =>
+            get(
+                `/users?limit=100`, // Get more users to allow for local filtering
+                {},
+                refreshAccessToken
+            ).then((response) => response.data),
+        staleTime: 1000 * 60 * 2, // 2 minutes
+    });
 
-            setTotalPages(calculatedTotalPages);
+    // Filter and paginate users locally using the debounced search term
+    const paginatedFilteredUsers = useMemo(() => {
+        // If no data yet, return empty array
+        if (!apiResponse) return [];
 
-            // Get current page items
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const paginatedUsers = filteredUsers.slice(
-                startIndex,
-                startIndex + itemsPerPage
-            );
+        // Filter users by search term
+        const filteredUsers = debouncedSearchTerm
+            ? apiResponse.filter(
+                  (user) =>
+                      user.name
+                          .toLowerCase()
+                          .includes(debouncedSearchTerm.toLowerCase()) ||
+                      (user.email &&
+                          user.email
+                              .toLowerCase()
+                              .includes(debouncedSearchTerm.toLowerCase())) ||
+                      (user.location &&
+                          user.location
+                              .toLowerCase()
+                              .includes(debouncedSearchTerm.toLowerCase()))
+              )
+            : apiResponse;
 
-            setUsers(paginatedUsers);
-            setLoading(false);
-        }, 500);
-    }, [searchTerm, currentPage, setLoading]);
+        // Calculate pagination
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        return {
+            users: filteredUsers.slice(startIndex, startIndex + itemsPerPage),
+            pagination: {
+                total: filteredUsers.length,
+                totalPages: Math.ceil(filteredUsers.length / itemsPerPage),
+                currentPage: currentPage,
+                hasNextPage:
+                    currentPage <
+                    Math.ceil(filteredUsers.length / itemsPerPage),
+                hasPreviousPage: currentPage > 1,
+            },
+        };
+    }, [apiResponse, debouncedSearchTerm, currentPage, itemsPerPage]);
 
     // Handle search input change
     const handleSearchChange = (e) => {
@@ -103,11 +138,16 @@ export default function UsersPage() {
                             value={searchTerm}
                             onChange={handleSearchChange}
                         />
+                        {searchTerm && searchTerm !== debouncedSearchTerm && (
+                            <div className="absolute right-2.5 top-2.5 h-4 w-4">
+                                <LoadingSpinner size="xs" />
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 {/* Loading state */}
-                {loading && (
+                {isLoading && (
                     <div className="flex h-[400px] items-center justify-center">
                         <div className="flex flex-col items-center space-y-4">
                             <LoadingSpinner size="lg" />
@@ -118,17 +158,35 @@ export default function UsersPage() {
                     </div>
                 )}
 
+                {/* Error state */}
+                {isError && (
+                    <Alert variant="destructive">
+                        <AlertDescription>
+                            {error?.message ||
+                                "Failed to load users. Please try again."}
+                        </AlertDescription>
+                    </Alert>
+                )}
+
                 {/* Only show users grid when not loading */}
-                {!loading && (
+                {!isLoading && !isError && (
                     <>
-                        {users.length > 0 ? (
+                        {debouncedSearchTerm && (
+                            <p className="text-sm text-muted-foreground mb-4">
+                                {paginatedFilteredUsers.pagination?.total}{" "}
+                                results for "{debouncedSearchTerm}"
+                            </p>
+                        )}
+
+                        {paginatedFilteredUsers.users &&
+                        paginatedFilteredUsers.users.length > 0 ? (
                             <motion.div
                                 variants={container}
                                 initial="hidden"
                                 animate="show"
                                 className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                             >
-                                {users.map((user) => (
+                                {paginatedFilteredUsers.users.map((user) => (
                                     <motion.div key={user.id} variants={item}>
                                         <Link href={`/users/${user.id}`}>
                                             <Card className="overflow-hidden transition-all hover:shadow-md">
@@ -137,8 +195,13 @@ export default function UsersPage() {
                                                         <Avatar className="h-20 w-20">
                                                             <AvatarImage
                                                                 src={
-                                                                    user.profilePictureUrl ||
-                                                                    "/placeholder.svg?height=80&width=80"
+                                                                    user.profilePictureUrl
+                                                                        ? user.profilePictureUrl.startsWith(
+                                                                              "http"
+                                                                          )
+                                                                            ? user.profilePictureUrl
+                                                                            : `${BASE_URL}${user.profilePictureUrl}`
+                                                                        : "/placeholder.svg?height=80&width=80"
                                                                 }
                                                                 alt={user.name}
                                                             />
@@ -193,54 +256,72 @@ export default function UsersPage() {
                     </>
                 )}
 
-                {totalPages > 1 && !loading && (
-                    <Pagination>
-                        <PaginationContent>
-                            <PaginationItem>
-                                <PaginationPrevious
-                                    onClick={() =>
-                                        setCurrentPage((prev) =>
-                                            Math.max(prev - 1, 1)
-                                        )
-                                    }
-                                    disabled={currentPage === 1}
-                                    className={
-                                        currentPage === 1
-                                            ? "pointer-events-none opacity-50"
-                                            : "cursor-pointer"
-                                    }
-                                />
-                            </PaginationItem>
-
-                            {[...Array(totalPages)].map((_, i) => (
-                                <PaginationItem key={i}>
-                                    <PaginationLink
-                                        onClick={() => setCurrentPage(i + 1)}
-                                        isActive={currentPage === i + 1}
-                                    >
-                                        {i + 1}
-                                    </PaginationLink>
+                {paginatedFilteredUsers.pagination &&
+                    paginatedFilteredUsers.pagination.totalPages > 1 &&
+                    !isLoading && (
+                        <Pagination>
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <PaginationPrevious
+                                        onClick={() =>
+                                            setCurrentPage((prev) =>
+                                                Math.max(prev - 1, 1)
+                                            )
+                                        }
+                                        disabled={currentPage === 1}
+                                        className={
+                                            currentPage === 1
+                                                ? "pointer-events-none opacity-50"
+                                                : "cursor-pointer"
+                                        }
+                                    />
                                 </PaginationItem>
-                            ))}
 
-                            <PaginationItem>
-                                <PaginationNext
-                                    onClick={() =>
-                                        setCurrentPage((prev) =>
-                                            Math.min(prev + 1, totalPages)
-                                        )
-                                    }
-                                    disabled={currentPage === totalPages}
-                                    className={
-                                        currentPage === totalPages
-                                            ? "pointer-events-none opacity-50"
-                                            : "cursor-pointer"
-                                    }
-                                />
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
-                )}
+                                {Array.from(
+                                    {
+                                        length: paginatedFilteredUsers
+                                            .pagination.totalPages,
+                                    },
+                                    (_, i) => i + 1
+                                ).map((page) => (
+                                    <PaginationItem key={page}>
+                                        <PaginationLink
+                                            onClick={() => setCurrentPage(page)}
+                                            isActive={currentPage === page}
+                                        >
+                                            {page}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                ))}
+
+                                <PaginationItem>
+                                    <PaginationNext
+                                        onClick={() =>
+                                            setCurrentPage((prev) =>
+                                                Math.min(
+                                                    prev + 1,
+                                                    paginatedFilteredUsers
+                                                        .pagination.totalPages
+                                                )
+                                            )
+                                        }
+                                        disabled={
+                                            currentPage ===
+                                            paginatedFilteredUsers.pagination
+                                                .totalPages
+                                        }
+                                        className={
+                                            currentPage ===
+                                            paginatedFilteredUsers.pagination
+                                                .totalPages
+                                                ? "pointer-events-none opacity-50"
+                                                : "cursor-pointer"
+                                        }
+                                    />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
+                    )}
             </div>
         </MainLayout>
     );
