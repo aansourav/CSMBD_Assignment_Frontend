@@ -62,16 +62,11 @@ export default function RegisterPage() {
 
         try {
             // Use the API service to make the request
-            const response = await post(
-                "/auth/signup",
-                {
-                    name: values.name,
-                    email: values.email,
-                    password: values.password,
-                },
-                {},
-                refreshAccessToken
-            );
+            const response = await post("/auth/signup", {
+                name: values.name,
+                email: values.email,
+                password: values.password,
+            });
 
             // Handle successful registration
             if (response.success) {

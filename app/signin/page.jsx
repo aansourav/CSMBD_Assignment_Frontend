@@ -52,15 +52,10 @@ export default function LoginPage() {
 
         try {
             // Use the API service to make the request
-            const response = await post(
-                "/auth/signin",
-                {
-                    email: values.email,
-                    password: values.password,
-                },
-                {},
-                refreshAccessToken
-            );
+            const response = await post("/auth/signin", {
+                email: values.email,
+                password: values.password,
+            });
 
             // Handle successful login
             if (response.success) {

@@ -2,7 +2,6 @@
 
 import { useToast } from "@/components/ui/use-toast";
 import { API_URL } from "@/config/url";
-import { post } from "@/services/api";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AppContext = createContext(undefined);
@@ -150,16 +149,15 @@ export function AppProvider({ children }) {
 
             if (accessToken) {
                 try {
-                    // Call the signout API using our API service
-                    await post(
-                        "/auth/signout",
-                        {}, // Empty body
-                        {
-                            headers: {
-                                Authorization: `Bearer ${accessToken}`,
-                            },
-                        }
-                    );
+                    // Call the signout API directly without using our API service
+                    // to avoid token refresh attempts during logout
+                    await fetch(`${API_URL}/auth/signout`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    });
 
                     toast({
                         title: "Logged Out",
