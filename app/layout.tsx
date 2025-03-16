@@ -1,8 +1,15 @@
+import { Providers } from "@/components/providers";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { AppProvider } from "@/context/app-context";
 import AuthMiddleware from "@/middleware/auth-middleware";
 import "./globals.css";
+
+export const metadata = {
+    title: "CSMBD Social Platform",
+    description: "A social platform for sharing content",
+    generator: "v0.dev",
+};
 
 export default function RootLayout({
     children,
@@ -11,31 +18,20 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" suppressHydrationWarning className="dark">
-            <head>
-                <title>CSMBD Social Platform</title>
-                <meta
-                    name="description"
-                    content="A social platform for sharing content"
-                />
-            </head>
             <body>
-                <AppProvider>
-                    <ThemeProvider
-                        attribute="class"
-                        defaultTheme="dark"
-                        enableSystem={false}
-                    >
-                        <AuthMiddleware>{children}</AuthMiddleware>
-                        <Toaster />
-                    </ThemeProvider>
-                </AppProvider>
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="dark"
+                    enableSystem={false}
+                >
+                    <Providers>
+                        <AppProvider>
+                            <AuthMiddleware>{children}</AuthMiddleware>
+                        </AppProvider>
+                    </Providers>
+                    <Toaster />
+                </ThemeProvider>
             </body>
         </html>
     );
 }
-
-import "./globals.css";
-
-export const metadata = {
-    generator: "v0.dev",
-};
