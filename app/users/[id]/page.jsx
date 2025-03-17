@@ -15,7 +15,6 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import YoutubeEmbed from "@/components/youtube-embed";
-import { BASE_URL } from "@/config/url";
 import { useApp } from "@/context/app-context";
 import { get } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
@@ -23,10 +22,13 @@ import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { Calendar, Mail, MapPin, Youtube } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useState } from "react";
+import getProfilePictureUrl from "../../../lib/get-profile-picture";
 
 export default function UserProfilePage() {
     const { id } = useParams();
     const { refreshAccessToken } = useApp();
+    const [imageError, setImageError] = useState(false);
 
     // Fetch user data with TanStack Query
     const {
@@ -40,7 +42,8 @@ export default function UserProfilePage() {
             get(`/users/${id}`, {}, refreshAccessToken).then(
                 (response) => response.data
             ),
-        staleTime: 1000 * 60 * 5, // 5 minutes
+        staleTime: 1000, // 10 seconds
+        refetchInterval: 1000, // 10 seconds
     });
 
     if (isLoading) {
@@ -111,18 +114,22 @@ export default function UserProfilePage() {
                                 }}
                             >
                                 <Avatar className="h-24 w-24 sm:h-32 sm:w-32">
-                                    <AvatarImage
-                                        src={
-                                            user.profilePictureUrl
-                                                ? user.profilePictureUrl.startsWith(
-                                                      "http"
-                                                  )
-                                                    ? user.profilePictureUrl
-                                                    : `${BASE_URL}${user.profilePictureUrl}`
-                                                : "/placeholder.svg?height=128&width=128"
-                                        }
-                                        alt={user.name}
-                                    />
+                                    {/* Only show AvatarImage if not in error state */}
+                                    {!imageError && (
+                                        <AvatarImage
+                                            src={getProfilePictureUrl(
+                                                user.profilePictureUrl
+                                            )}
+                                            alt={user.name}
+                                            onError={(e) => {
+                                                console.error(
+                                                    "Image failed to load:",
+                                                    e.target.src
+                                                );
+                                                setImageError(true);
+                                            }}
+                                        />
+                                    )}
                                     <AvatarFallback className="text-2xl">
                                         {user.name.charAt(0)}
                                     </AvatarFallback>

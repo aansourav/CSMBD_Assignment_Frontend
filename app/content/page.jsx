@@ -28,8 +28,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import YoutubeEmbed from "@/components/youtube-embed";
-import { BASE_URL } from "@/config/url";
 import { useApp } from "@/context/app-context";
+import getProfilePictureUrl from "@/lib/get-profile-picture";
 import { get } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -226,18 +226,10 @@ export default function ContentPage() {
                                                 >
                                                     <Avatar className="h-8 w-8">
                                                         <AvatarImage
-                                                            src={
+                                                            src={getProfilePictureUrl(
                                                                 item.user
                                                                     .profilePictureUrl
-                                                                    ? item.user.profilePictureUrl.startsWith(
-                                                                          "http"
-                                                                      )
-                                                                        ? item
-                                                                              .user
-                                                                              .profilePictureUrl
-                                                                        : `${BASE_URL}${item.user.profilePictureUrl}`
-                                                                    : "/placeholder.svg?height=32&width=32"
-                                                            }
+                                                            )}
                                                             alt={item.user.name}
                                                         />
                                                         <AvatarFallback>

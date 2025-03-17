@@ -14,8 +14,8 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import { BASE_URL } from "@/config/url";
 import { useApp } from "@/context/app-context";
+import getProfilePictureUrl from "@/lib/get-profile-picture";
 import { get } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -194,15 +194,9 @@ export default function UsersPage() {
                                                     <div className="flex flex-col items-center space-y-4">
                                                         <Avatar className="h-20 w-20">
                                                             <AvatarImage
-                                                                src={
+                                                                src={getProfilePictureUrl(
                                                                     user.profilePictureUrl
-                                                                        ? user.profilePictureUrl.startsWith(
-                                                                              "http"
-                                                                          )
-                                                                            ? user.profilePictureUrl
-                                                                            : `${BASE_URL}${user.profilePictureUrl}`
-                                                                        : "/placeholder.svg?height=80&width=80"
-                                                                }
+                                                                )}
                                                                 alt={user.name}
                                                             />
                                                             <AvatarFallback className="text-lg">

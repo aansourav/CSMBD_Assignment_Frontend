@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import YoutubeEmbed from "@/components/youtube-embed";
 import { API_URL, BASE_URL } from "@/config/url";
 import { useApp } from "@/context/app-context";
+import getProfilePictureUrl from "@/lib/get-profile-picture";
 import { del, get, post } from "@/services/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -482,13 +483,9 @@ export default function ProfilePage() {
                                                         <AvatarImage
                                                             src={
                                                                 profilePicturePreview ||
-                                                                (user.profilePictureUrl
-                                                                    ? user.profilePictureUrl.startsWith(
-                                                                          "http"
-                                                                      )
-                                                                        ? user.profilePictureUrl
-                                                                        : `${BASE_URL}${user.profilePictureUrl}`
-                                                                    : "/placeholder.svg")
+                                                                getProfilePictureUrl(
+                                                                    user.profilePictureUrl
+                                                                )
                                                             }
                                                             alt={user.name}
                                                             onError={
@@ -558,19 +555,13 @@ export default function ProfilePage() {
                                                                 id="email"
                                                                 name="email"
                                                                 type="email"
-                                                                placeholder="Your email"
-                                                                className={
-                                                                    errors.email &&
-                                                                    touched.email
-                                                                        ? "border-destructive"
-                                                                        : ""
-                                                                }
+                                                                disabled
+                                                                className="bg-muted cursor-not-allowed"
                                                             />
-                                                            <ErrorMessage
-                                                                name="email"
-                                                                component="div"
-                                                                className="text-sm text-destructive"
-                                                            />
+                                                            <p className="text-sm text-muted-foreground">
+                                                                Email cannot be
+                                                                changed
+                                                            </p>
                                                         </div>
                                                     </div>
 

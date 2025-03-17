@@ -11,6 +11,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useApp } from "@/context/app-context";
+import getProfilePictureUrl from "@/lib/get-profile-picture";
 import { motion } from "framer-motion";
 import {
     Home,
@@ -143,10 +144,9 @@ export default function Navbar({ onMenuClick }) {
                                     >
                                         <Avatar className="h-8 w-8">
                                             <AvatarImage
-                                                src={
-                                                    user?.profilePictureUrl ||
-                                                    "/placeholder.svg?height=32&width=32"
-                                                }
+                                                src={getProfilePictureUrl(
+                                                    `/api/v1/users/${user?.id}/profile-picture`
+                                                )}
                                                 alt={user?.name}
                                             />
                                             <AvatarFallback>
