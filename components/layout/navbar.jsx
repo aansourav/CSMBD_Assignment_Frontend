@@ -35,6 +35,18 @@ export default function Navbar({ onMenuClick }) {
     const pathname = usePathname();
     const [scrolled, setScrolled] = useState(false);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [imageError, setImageError] = useState(false);
+    const [profileImageUrl, setProfileImageUrl] = useState("");
+
+    // Update profile image URL when user changes
+    useEffect(() => {
+        if (user?.id) {
+            setProfileImageUrl(
+                getProfilePictureUrl(`/api/v1/users/${user.id}/profile-picture`)
+            );
+            setImageError(false);
+        }
+    }, [user?.id]);
 
     // Handle scroll effect
     useEffect(() => {
@@ -54,6 +66,11 @@ export default function Navbar({ onMenuClick }) {
         } finally {
             setIsLoggingOut(false);
         }
+    };
+
+    // Handle image error
+    const handleImageError = () => {
+        setImageError(true);
     };
 
     return (
@@ -143,12 +160,13 @@ export default function Navbar({ onMenuClick }) {
                                         className="relative h-8 w-8 rounded-full"
                                     >
                                         <Avatar className="h-8 w-8">
-                                            <AvatarImage
-                                                src={getProfilePictureUrl(
-                                                    `/api/v1/users/${user?.id}/profile-picture`
-                                                )}
-                                                alt={user?.name}
-                                            />
+                                            {!imageError && (
+                                                <AvatarImage
+                                                    src={profileImageUrl}
+                                                    alt={user?.name}
+                                                    onError={handleImageError}
+                                                />
+                                            )}
                                             <AvatarFallback>
                                                 {user?.name?.charAt(0) || "U"}
                                             </AvatarFallback>
