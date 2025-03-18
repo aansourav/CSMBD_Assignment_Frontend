@@ -76,7 +76,7 @@ const processResponse = async (response) => {
  * Make a GET request
  * @param {string} endpoint - API endpoint
  * @param {Object} options - Additional fetch options
- * @param {Function} refreshTokenFn - Function to refresh the token
+ * @param {Function} refreshTokenFn - Function to refresh the token (optional for public endpoints)
  * @returns {Promise<Object>} - API response
  */
 export const get = (endpoint, options = {}, refreshTokenFn) => {

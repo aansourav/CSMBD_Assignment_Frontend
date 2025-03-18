@@ -14,7 +14,7 @@ import UserProfileTabs from "./components/UserProfileTabs";
 
 export default function UserProfilePage() {
     const { id } = useParams();
-    const { refreshAccessToken, user: currentUser } = useApp();
+    const { refreshAccessToken, user: currentUser, isAuthenticated } = useApp();
 
     // Fetch user data with TanStack Query
     const {
@@ -54,7 +54,7 @@ export default function UserProfilePage() {
             >
                 <UserProfileHeader
                     user={userData}
-                    currentUserId={currentUser.id}
+                    currentUserId={isAuthenticated ? currentUser?.id : null}
                 />
                 <UserProfileTabs user={userData} />
             </motion.div>

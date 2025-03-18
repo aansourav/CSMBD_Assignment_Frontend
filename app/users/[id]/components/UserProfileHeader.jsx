@@ -49,7 +49,9 @@ export default function UserProfileHeader({ user, currentUserId }) {
                         <div>
                             <h1 className="text-2xl font-bold sm:text-3xl">
                                 {user.name}{" "}
-                                {user.id === currentUserId && "(You)"}
+                                {currentUserId &&
+                                    user.id === currentUserId &&
+                                    "(You)"}
                             </h1>
                             <p className="text-muted-foreground">
                                 {user.bio || "No bio provided"}

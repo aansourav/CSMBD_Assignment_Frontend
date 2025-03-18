@@ -96,7 +96,7 @@ A modern, responsive web application built with Next.js 15 for user content mana
 
 ## 🎮 Demo
 
-Check out the live demo: [CSMBD Frontend Demo](https://your-demo-url.com)
+Check out the live demo: [CSMBD Frontend Live Site](https://csmbd-assignment-frontend.vercel.app)
 
 <p align="center">
   <img src="https://via.placeholder.com/800x450?text=Application+Demo+GIF" alt="Application Demo" width="600"/>
