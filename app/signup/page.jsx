@@ -77,7 +77,7 @@ export default function RegisterPage() {
 
                 // Show success toast
                 toast({
-                    title: "Account created successfully. You are now logged in",
+                    title: "Account created successfully",
                     variant: "success",
                 });
 
