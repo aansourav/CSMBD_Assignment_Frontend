@@ -30,7 +30,7 @@ export default function ContentPage() {
 
     // Fetch content data with TanStack Query
     const {
-        data: contentData,
+        data: apiResponse,
         isLoading,
         isError,
         error,
@@ -41,9 +41,13 @@ export default function ContentPage() {
                 `/users/content?page=${currentPage}&limit=${itemsPerPage}&sortBy=${sortBy}`,
                 {},
                 refreshAccessToken
-            ).then((response) => response.data),
+            ),
         staleTime: 1000 * 60, // 1 minute
     });
+
+    // Extract content and pagination data from API response
+    const contentData = apiResponse?.data || [];
+    const paginationData = apiResponse?.pagination;
 
     // Filter content based on search term
     const filteredContent = useMemo(() => {
@@ -127,11 +131,13 @@ export default function ContentPage() {
                     </>
                 )}
 
-                {contentData?.pagination &&
-                    !isLoading &&
-                    !debouncedSearchTerm && (
+                {/* Show pagination when we have pagination data */}
+                {!isLoading &&
+                    !isError &&
+                    !debouncedSearchTerm &&
+                    paginationData && (
                         <ContentPagination
-                            pagination={contentData.pagination}
+                            pagination={paginationData}
                             currentPage={currentPage}
                             onPageChange={setCurrentPage}
                         />

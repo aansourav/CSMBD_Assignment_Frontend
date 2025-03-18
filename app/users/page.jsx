@@ -25,61 +25,47 @@ export default function UsersPage() {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    // Fetch users with TanStack Query - without search parameter
+    // Fetch users with TanStack Query - using server-side pagination
     const {
         data: apiResponse,
         isLoading,
         isError,
         error,
     } = useQuery({
-        queryKey: ["users"],
-        queryFn: () =>
-            get(
-                `/users?limit=100`, // Get more users to allow for local filtering
-                {},
-                refreshAccessToken
-            ).then((response) => response.data),
+        queryKey: ["users", currentPage, itemsPerPage, debouncedSearchTerm],
+        queryFn: () => {
+            // Build query parameters
+            const params = new URLSearchParams();
+            params.append("page", currentPage);
+            params.append("limit", itemsPerPage);
+
+            // Add search term if provided
+            if (debouncedSearchTerm) {
+                params.append("search", debouncedSearchTerm);
+            }
+
+            return get(`/users?${params.toString()}`, {}, refreshAccessToken);
+        },
         staleTime: 1000 * 60 * 2, // 2 minutes
     });
 
-    // Filter and paginate users locally using the debounced search term
+    // Extract data and pagination from API response
+    const userData = apiResponse?.data || [];
+    const paginationData = apiResponse?.pagination;
+
+    // Create filtered users object with correct structure for UserGrid
     const paginatedFilteredUsers = useMemo(() => {
-        // If no data yet, return empty array
-        if (!apiResponse) return [];
-
-        // Filter users by search term
-        const filteredUsers = debouncedSearchTerm
-            ? apiResponse.filter(
-                  (user) =>
-                      user.name
-                          .toLowerCase()
-                          .includes(debouncedSearchTerm.toLowerCase()) ||
-                      (user.email &&
-                          user.email
-                              .toLowerCase()
-                              .includes(debouncedSearchTerm.toLowerCase())) ||
-                      (user.location &&
-                          user.location
-                              .toLowerCase()
-                              .includes(debouncedSearchTerm.toLowerCase()))
-              )
-            : apiResponse;
-
-        // Calculate pagination
-        const startIndex = (currentPage - 1) * itemsPerPage;
         return {
-            users: filteredUsers.slice(startIndex, startIndex + itemsPerPage),
-            pagination: {
-                total: filteredUsers.length,
-                totalPages: Math.ceil(filteredUsers.length / itemsPerPage),
+            users: userData,
+            pagination: paginationData || {
+                total: 0,
+                totalPages: 0,
                 currentPage: currentPage,
-                hasNextPage:
-                    currentPage <
-                    Math.ceil(filteredUsers.length / itemsPerPage),
+                hasNextPage: false,
                 hasPreviousPage: currentPage > 1,
             },
         };
-    }, [apiResponse, debouncedSearchTerm, currentPage, itemsPerPage]);
+    }, [userData, paginationData, currentPage]);
 
     // Handle search input change
     const handleSearchChange = (e) => {
@@ -114,10 +100,12 @@ export default function UsersPage() {
                     debouncedSearchTerm={debouncedSearchTerm}
                 />
 
-                <UserPagination
-                    pagination={paginatedFilteredUsers.pagination}
-                    setCurrentPage={setCurrentPage}
-                />
+                {paginationData && paginationData.totalPages > 1 && (
+                    <UserPagination
+                        pagination={paginationData}
+                        setCurrentPage={setCurrentPage}
+                    />
+                )}
             </div>
         </MainLayout>
     );
