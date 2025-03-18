@@ -11,7 +11,7 @@
 A modern, responsive web application built with Next.js 15 for user content management and collaboration.
 
 <p align="center">
-  <img src="https://i.ibb.co.com/YT8JRGYF/csmbd-social.png" alt="CSMBD Frontend" width="800"/>
+  <img src="https://i.ibb.co.com/1Y3rnjym/1.png" alt="CSMBD Frontend" width="800"/>
 </p>
 
 ## 📑 Table of Contents
@@ -236,7 +236,6 @@ Please make sure to update tests as appropriate.
 
 **Issue**: Authentication issues
 **Solution**: Clear browser cookies/local storage and try signing in again.
-
 
 ---
 
