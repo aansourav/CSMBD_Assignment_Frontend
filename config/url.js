@@ -1,3 +1,3 @@
 // API Configuration
-export const BASE_URL = "http://localhost:5500";
-export const API_URL = "http://localhost:5500/api/v1";
+export const BASE_URL = "https://sourav.solobuilderhub.com";
+export const API_URL = "https://sourav.solobuilderhub.com/api/v1";
