@@ -46,6 +46,8 @@ export default function UserProfilePage() {
         refetchInterval: 1000, // 10 seconds
     });
 
+    const { user: currentUser } = useApp();
+
     if (isLoading) {
         return (
             <MainLayout>
@@ -139,7 +141,8 @@ export default function UserProfilePage() {
                             <div className="space-y-2">
                                 <div>
                                     <h1 className="text-2xl font-bold sm:text-3xl">
-                                        {user.name}
+                                        {user.name}{" "}
+                                        {id === currentUser.id && "(You)"}
                                     </h1>
                                     <p className="text-muted-foreground">
                                         {user.bio || "No bio provided"}
