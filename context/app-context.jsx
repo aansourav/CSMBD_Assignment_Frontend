@@ -29,9 +29,26 @@ export function AppProvider({ children }) {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [tokenChecked, setTokenChecked] = useState(false);
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(() => {
+        // Initialize from localStorage if available, otherwise default to true (dark mode)
+        if (typeof window !== "undefined") {
+            const savedTheme = localStorage.getItem("theme");
+            return savedTheme ? savedTheme === "dark" : true;
+        }
+        return true;
+    });
     const [loading, setLoading] = useState(false);
     const { toast } = useToast();
+
+    // Initialize theme on mount
+    useEffect(() => {
+        if (darkMode) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+        localStorage.setItem("theme", darkMode ? "dark" : "light");
+    }, []);
 
     // Check authentication status
     const checkAuthStatus = async () => {
@@ -188,12 +205,16 @@ export function AppProvider({ children }) {
 
     // Toggle dark mode
     const toggleDarkMode = () => {
-        setDarkMode(!darkMode);
-        if (!darkMode) {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
+        setDarkMode((prev) => {
+            const newValue = !prev;
+            if (newValue) {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
+            localStorage.setItem("theme", newValue ? "dark" : "light");
+            return newValue;
+        });
     };
 
     const value = {

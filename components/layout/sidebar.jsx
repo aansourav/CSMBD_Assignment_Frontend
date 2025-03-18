@@ -41,7 +41,7 @@ export default function Sidebar() {
                 },
                 {
                     title: "Settings",
-                    href: "/settings",
+                    href: "",
                     icon: <Settings className="h-4 w-4 mr-2" />,
                 },
             ],
