@@ -99,7 +99,22 @@ A modern, responsive web application built with Next.js 15 for user content mana
 Check out the live demo: [CSMBD Frontend Live Site](https://csmbd-assignment-frontend.vercel.app)
 
 <p align="center">
-  <img src="https://via.placeholder.com/800x450?text=Application+Demo+GIF" alt="Application Demo" width="600"/>
+  <img src="https://i.ibb.co.com/V0ncsTVy/2b052bcd-a713-4880-9bdc-15582201beea.png" alt="Application Demo" width="600"/>
+</p>
+<p align="center">
+  <img src="https://i.ibb.co.com/99R6pBbw/3ba55e64-92da-4310-8f8e-23b6d0c0c654.png" alt="Application Demo" width="600"/>
+</p>
+<p align="center">
+  <img src="https://i.ibb.co.com/m5bvYzhf/66.png" alt="Application Demo" width="600"/>
+</p>
+<p align="center">
+  <img src="https://i.ibb.co.com/FkYPLhb0/b2a1b38d-60cc-4e4e-948a-947175f306db.png" alt="Application Demo" width="600"/>
+</p>
+<p align="center">
+  <img src="https://i.ibb.co.com/77wTrDW/b6c0494b-d28c-4b8f-a79e-992a1d87feb7.png" alt="Application Demo" width="600"/>
+</p>
+<p align="center">
+  <img src="https://i.ibb.co.com/1fPMKnzK/e6750f96-b654-40af-b11d-0f8b278d8455.png" alt="Application Demo" width="600"/>
 </p>
 
 ## 🚀 Getting Started
