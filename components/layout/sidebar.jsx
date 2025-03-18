@@ -22,8 +22,8 @@ export default function Sidebar() {
                     icon: <Users className="h-4 w-4 mr-2" />,
                 },
                 {
-                    title: "Content",
-                    href: "/content",
+                    title: "Contents",
+                    href: "/contents",
                     icon: <Youtube className="h-4 w-4 mr-2" />,
                 },
             ],

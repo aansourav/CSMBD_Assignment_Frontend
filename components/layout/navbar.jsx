@@ -14,7 +14,6 @@ import { useApp } from "@/context/app-context";
 import getProfilePictureUrl from "@/lib/get-profile-picture";
 import { motion } from "framer-motion";
 import {
-    Home,
     Loader2,
     LogIn,
     LogOut,
@@ -24,6 +23,7 @@ import {
     User,
     UserPlus,
     Users,
+    Youtube,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -126,16 +126,16 @@ export default function Navbar({ onMenuClick }) {
                                 Users
                             </Button>
                         </Link>
-                        <Link href="/content">
+                        <Link href="/contents">
                             <Button
                                 variant={
-                                    pathname === "/content"
+                                    pathname === "/contents"
                                         ? "secondary"
                                         : "ghost"
                                 }
                             >
-                                <Home className="h-4 w-4 mr-2" />
-                                Content
+                                <Youtube className="h-4 w-4 mr-2" />
+                                Contents
                             </Button>
                         </Link>
                     </nav>
