@@ -8,7 +8,6 @@ import "./globals.css";
 export const metadata = {
     title: "CSMBD Social Platform",
     description: "A social platform for sharing content",
-    generator: "v0.dev",
 };
 
 export default function RootLayout({
