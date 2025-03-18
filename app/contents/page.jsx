@@ -42,7 +42,9 @@ export default function ContentPage() {
                 {},
                 refreshAccessToken
             ),
-        staleTime: 1000 * 60, // 1 minute
+        staleTime: 0,
+        refetchOnMount: "always", // Always refetch when component mounts
+        refetchOnWindowFocus: true, // 1 minute
     });
 
     // Extract content and pagination data from API response

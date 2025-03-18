@@ -81,8 +81,8 @@ export default function RegisterPage() {
                     variant: "success",
                 });
 
-                // Redirect to homepage
-                router.push("/");
+                // Redirect to users page instead of homepage
+                router.push("/users");
             }
         } catch (error) {
             console.error("Registration error:", error);

@@ -28,7 +28,9 @@ export default function UserProfilePage() {
             get(`/users/${id}`, {}, refreshAccessToken).then(
                 (response) => response.data
             ),
-        staleTime: 1000, // 10 seconds
+        staleTime: 0,
+        refetchOnMount: "always", // Always refetch when component mounts
+        refetchOnWindowFocus: true, // 10 seconds
         refetchInterval: 1000, // 10 seconds
     });
 

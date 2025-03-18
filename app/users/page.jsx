@@ -46,7 +46,9 @@ export default function UsersPage() {
 
             return get(`/users?${params.toString()}`, {}, refreshAccessToken);
         },
-        staleTime: 1000 * 60 * 2, // 2 minutes
+        staleTime: 0,
+        refetchOnMount: "always", // Always refetch when component mounts
+        refetchOnWindowFocus: true, // Refetch when window regains focus
     });
 
     // Extract data and pagination from API response

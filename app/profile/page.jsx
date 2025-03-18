@@ -34,7 +34,9 @@ export default function ProfilePage() {
                 (response) => response.data
             ),
         enabled: !!isAuthenticated,
-        staleTime: 1000 * 60 * 5, // 5 minutes
+        staleTime: 0,
+        refetchOnMount: "always", // Always refetch when component mounts
+        refetchOnWindowFocus: true,
         retry: 1,
         onError: (error) => {
             setProfileError(error.message || "Failed to load profile data");
