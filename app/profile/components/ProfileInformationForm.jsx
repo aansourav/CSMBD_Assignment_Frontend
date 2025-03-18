@@ -1,12 +1,19 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LoadingButton, LoadingOverlay } from "@/components/ui/loading-spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { API_URL } from "@/config/url";
+import { useApp } from "@/context/app-context";
 import getProfilePictureUrl from "@/lib/get-profile-picture";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -34,6 +41,7 @@ export default function ProfileInformationForm({
     refreshAccessToken,
     setLoading,
 }) {
+    const { setUser } = useApp();
     const [profileError, setProfileError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [profilePicture, setProfilePicture] = useState(null);
@@ -111,6 +119,24 @@ export default function ProfileInformationForm({
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["profile"] });
+
+            if (data.success && data.data) {
+                const storedUser = localStorage.getItem("user");
+                if (storedUser) {
+                    const userData = JSON.parse(storedUser);
+                    const updatedUser = {
+                        ...userData,
+                        name: data.data.name,
+                        email: data.data.email,
+                        bio: data.data.bio,
+                        location: data.data.location,
+                        profilePictureUrl: data.data.profilePictureUrl,
+                    };
+                    localStorage.setItem("user", JSON.stringify(updatedUser));
+                    setUser(updatedUser);
+                }
+            }
+
             setSuccessMessage("Profile updated successfully");
             setProfilePicture(null);
             setProfilePicturePreview("");

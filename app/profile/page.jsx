@@ -16,7 +16,8 @@ import ProfileLoadingState from "./components/ProfileLoadingState";
 
 export default function ProfilePage() {
     const router = useRouter();
-    const { isAuthenticated, refreshAccessToken, setLoading } = useApp();
+    const { isAuthenticated, refreshAccessToken, setLoading, tokenChecked } =
+        useApp();
     const [successMessage, setSuccessMessage] = useState("");
     const [loading, setLoadingState] = useState(false);
 
@@ -40,12 +41,12 @@ export default function ProfilePage() {
         },
     });
 
-    // Redirect if not authenticated
+    // Redirect if not authenticated, but only after token check is complete
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (tokenChecked && !isAuthenticated) {
             router.push("/signin");
         }
-    }, [isAuthenticated, router]);
+    }, [isAuthenticated, router, tokenChecked]);
 
     // Clear success message after 3 seconds
     useEffect(() => {
@@ -76,12 +77,14 @@ export default function ProfilePage() {
         }
     }, [profileData]);
 
-    if (!isAuthenticated) {
-        return null; // Will redirect in useEffect
+    // Show loading state if authentication check is still in progress or user data is loading
+    if (!tokenChecked || (isAuthenticated && isLoading)) {
+        return <ProfileLoadingState />;
     }
 
-    if (isLoading) {
-        return <ProfileLoadingState />;
+    // After token check is complete, if not authenticated, render nothing (will redirect in useEffect)
+    if (!isAuthenticated) {
+        return null;
     }
 
     if (isError) {

@@ -11,7 +11,7 @@ const authRoutes = ["/signin", "/signup"];
 const protectedRoutes = ["/profile"];
 
 export default function AuthMiddleware({ children }) {
-    const { isAuthenticated, checkAuthStatus } = useApp();
+    const { isAuthenticated, checkAuthStatus, tokenChecked } = useApp();
     const router = useRouter();
     const pathname = usePathname();
 
@@ -19,16 +19,17 @@ export default function AuthMiddleware({ children }) {
         // Check authentication status when component mounts
         const initAuth = async () => {
             await checkAuthStatus();
-            handleRouteProtection();
         };
 
         initAuth();
     }, []);
 
     useEffect(() => {
-        // Handle route protection whenever authentication status or path changes
-        handleRouteProtection();
-    }, [isAuthenticated, pathname]);
+        // Only handle route protection after token check is complete
+        if (tokenChecked) {
+            handleRouteProtection();
+        }
+    }, [isAuthenticated, pathname, tokenChecked]);
 
     const handleRouteProtection = () => {
         // For authentication routes (login/signup), redirect to home if already logged in

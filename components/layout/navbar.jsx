@@ -37,16 +37,19 @@ export default function Navbar({ onMenuClick }) {
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const [imageError, setImageError] = useState(false);
     const [profileImageUrl, setProfileImageUrl] = useState("");
+    const [timestamp, setTimestamp] = useState(Date.now());
 
-    // Update profile image URL when user changes
+    // Update profile image URL when user or user's profile picture changes
     useEffect(() => {
         if (user?.id) {
+            // Update timestamp to force image refresh
+            setTimestamp(Date.now());
             setProfileImageUrl(
                 getProfilePictureUrl(`/api/v1/users/${user.id}/profile-picture`)
             );
             setImageError(false);
         }
-    }, [user?.id]);
+    }, [user]);
 
     // Handle scroll effect
     useEffect(() => {

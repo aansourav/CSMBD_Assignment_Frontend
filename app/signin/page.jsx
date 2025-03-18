@@ -91,7 +91,7 @@ export default function LoginPage() {
                     transition={{ duration: 0.5 }}
                     className="w-full max-w-md "
                 >
-                    <Card className="border-muted/40 shadow-lg bg-gray-950">
+                    <Card className="border-muted/40 shadow-lg dark:bg-gray-950 bg-gray-100">
                         <CardHeader className="space-y-1 text-center">
                             <CardTitle className="text-2xl font-bold">
                                 Sign In

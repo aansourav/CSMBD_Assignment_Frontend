@@ -106,7 +106,7 @@ export default function RegisterPage() {
                     transition={{ duration: 0.5 }}
                     className="w-full max-w-md"
                 >
-                    <Card className="border-muted/40 shadow-lg bg-gray-950">
+                    <Card className="border-muted/40 shadow-lg dark:bg-gray-950 bg-gray-100">
                         <CardHeader className="space-y-1 text-center">
                             <CardTitle className="text-2xl font-bold">
                                 Create an Account
@@ -145,8 +145,8 @@ export default function RegisterPage() {
                                                 placeholder="John Doe"
                                                 className={
                                                     errors.name && touched.name
-                                                        ? "border-destructive"
-                                                        : ""
+                                                        ? "border-destructive dark:bg-background"
+                                                        : "dark:bg-background"
                                                 }
                                             />
                                             <ErrorMessage
@@ -167,8 +167,8 @@ export default function RegisterPage() {
                                                 className={
                                                     errors.email &&
                                                     touched.email
-                                                        ? "border-destructive"
-                                                        : ""
+                                                        ? "border-destructive dark:bg-background"
+                                                        : "dark:bg-background"
                                                 }
                                             />
                                             <ErrorMessage
@@ -196,8 +196,8 @@ export default function RegisterPage() {
                                                     className={
                                                         errors.password &&
                                                         touched.password
-                                                            ? "border-destructive pr-10"
-                                                            : "pr-10"
+                                                            ? "border-destructive dark:bg-background"
+                                                            : "dark:bg-background"
                                                     }
                                                 />
                                                 <Button
@@ -248,8 +248,8 @@ export default function RegisterPage() {
                                                     className={
                                                         errors.confirmPassword &&
                                                         touched.confirmPassword
-                                                            ? "border-destructive pr-10"
-                                                            : "pr-10"
+                                                            ? "border-destructive dark:bg-background"
+                                                            : "dark:bg-background"
                                                     }
                                                 />
                                                 <Button
