@@ -10,27 +10,35 @@
 
 A modern, responsive web application built with Next.js 15 for user content management and collaboration.
 
+#### Demo Account
+
+```
+Email: aansourav@email.com
+Password: 11111111
+```
+
+<br/>
 <p align="center">
   <img src="https://i.ibb.co.com/1Y3rnjym/1.png" alt="CSMBD Frontend" width="800"/>
 </p>
 
 ## 📑 Table of Contents
 
-- [CSMBD Assignment Frontend](#csmbd-assignment-frontend)
-  - [📑 Table of Contents](#-table-of-contents)
-  - [✨ Features](#-features)
-  - [🛠 Tech Stack](#-tech-stack)
-  - [🎮 Demo](#-demo)
-  - [🚀 Getting Started](#-getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-  - [📂 Project Structure](#-project-structure)
-  - [⚙️ API Configuration](#️-api-configuration)
-  - [🌐 Deployment](#-deployment)
-    - [Build for Production](#build-for-production)
-  - [👥 Contributing](#-contributing)
-  - [❓ Troubleshooting](#-troubleshooting)
-    - [Common Issues](#common-issues)
+-   [CSMBD Assignment Frontend](#csmbd-assignment-frontend) - [Demo Account](#demo-account)
+    -   [📑 Table of Contents](#-table-of-contents)
+    -   [✨ Features](#-features)
+    -   [🛠 Tech Stack](#-tech-stack)
+    -   [🎮 Demo](#-demo)
+    -   [🚀 Getting Started](#-getting-started)
+        -   [Prerequisites](#prerequisites)
+        -   [Installation](#installation)
+    -   [📂 Project Structure](#-project-structure)
+    -   [⚙️ API Configuration](#️-api-configuration)
+    -   [🌐 Deployment](#-deployment)
+        -   [Build for Production](#build-for-production)
+    -   [👥 Contributing](#-contributing)
+    -   [❓ Troubleshooting](#-troubleshooting)
+        -   [Common Issues](#common-issues)
 
 ## ✨ Features
 
